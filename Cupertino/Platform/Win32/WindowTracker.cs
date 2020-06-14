@@ -38,12 +38,13 @@ namespace Cupertino.Platform.Win32
         }
 
         public void SendMenuItemAction(IntPtr hWnd, IWindowRef.MenuItemRef menuItem) {
-            IntPtr wParam = (IntPtr)menuItem.Ref;
-            IntPtr lParam = menuItem.RootMenuHandle;
+            //IntPtr wParam = (IntPtr)menuItem.Ref;
+            //IntPtr lParam = menuItem.MenuHandle;
+            //SendMessage(hWnd, WindowMessage.WM_MENUSELECT, wParam, lParam);
             Debug.WriteLine("SendMessage: {0:x8}, {1}, {2:x}, {3:x}",
-                hWnd, WindowMessage.WM_MENUSELECT, wParam, lParam);
+                hWnd, WindowMessage.WM_COMMAND, (IntPtr)menuItem.MenuHandle, IntPtr.Zero);
+            SendMessage(hWnd, WindowMessage.WM_COMMAND, (IntPtr)menuItem.MenuHandle, IntPtr.Zero);
 
-            SendMessage(hWnd, WindowMessage.WM_MENUSELECT, wParam, lParam);
             //IntPtr szString = Marshal.StringToHGlobalUni(new string("blablabla"));
             //SendMessage(hWnd, WindowMessage.WM_SETTEXT, (IntPtr) 0, szString);
             //Marshal.FreeHGlobal(szString);
@@ -199,7 +200,8 @@ namespace Cupertino.Platform.Win32
             if (hook != null)
             {
                 Debug.WriteLine("WinEventHook removed");
-                User32.UnhookWinEvent(hook.DangerousGetHandle());
+                hook.Dispose();
+                //User32.UnhookWinEvent(hook.DangerousGetHandle());
             }
         }
     }

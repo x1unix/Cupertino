@@ -77,7 +77,8 @@ namespace Cupertino
         {
             Debug.WriteLine("Selected Item {0}@{1} {2} (Root: {3:x8}, Local: {4:x8})", mRef.Index, mRef.Ref, mRef.Label, mRef.RootMenuHandle, mRef.MenuHandle);
             IntPtr hWnd = State.LastWindowHandle;
-            Task.Run(() => tracker.SendMenuItemAction(hWnd, mRef));
+            tracker.SendMenuItemAction(hWnd, mRef);
+            //Task.Run(() => tracker.SendMenuItemAction(hWnd, mRef));
         }
 
         ~MainWindow()
