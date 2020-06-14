@@ -35,6 +35,7 @@ namespace Cupertino.Platform.Win32
 
         public class Win32WindowRef : IWindowRef
         {
+            public IntPtr Handle { get; set; }
             public int ProcessID { get; set; }
             public string ExecutablePath { get; set; }
             public string Title { get; set;  }
@@ -69,6 +70,7 @@ namespace Cupertino.Platform.Win32
                     string appName = appNameCache[executablePath];
                     var ev = new Win32WindowRef 
                     {
+                        Handle = hwnd,
                         ProcessID = processId,
                         ExecutablePath = executablePath,
                         Title = winTitle.ToString(),
@@ -86,44 +88,6 @@ namespace Cupertino.Platform.Win32
                         };
                     }
                     WindowSelected?.Invoke(ev);
-
-                    
-                    
-                    //MenuMembersMask fMask = MenuMembersMask.MIIM_SUBMENU | MenuMembersMask.MIIM_FTYPE | MenuMembersMask.MIIM_ID | MenuMembersMask.MIIM_STRING;
-                    //MENUITEMINFO mii = new MENUITEMINFO { fMask = MenuMembersMask.MIIM_SUBMENU | MenuMembersMask.MIIM_FTYPE | MenuMembersMask.MIIM_ID | MenuMembersMask.MIIM_STRING };
-                    //int nCount = GetMenuItemCount(hMenu);
-                    //Debug.WriteLine("Window has {0} menu items", nCount);
-                    //for (uint i = 0; i < nCount; i++)
-                    //{
-                    //    MENUITEMINFO mif = mii.Create();
-                    //    mif.dwTypeData = null;
-                    //    mif.fMask = fMask;
-                    //    if (!GetMenuItemInfo(hMenu, i, true, ref mif))
-                    //    {
-                    //        throw new Win32Exception();
-                    //    }
-                        
-                    //    //if ((mif.fType & MenuItemType.MFT_STRING) != 0 && mif.cch > 0)
-                    //    if (mif.fType == MenuItemType.MFT_STRING && mif.cch > 0)
-                    //    {
-                    //        mif.cch++;
-                    //        IntPtr szString = Marshal.AllocHGlobal((IntPtr)(mif.cch * 2));
-                    //        mif.dwTypeData = (char*) szString;
-                    //        try
-                    //        {
-                    //            if (!GetMenuItemInfo(hMenu, i, true, ref mif)) {
-                    //                throw new Win32Exception();
-                    //            }
-
-                    //            string caption = Marshal.PtrToStringUni(szString);
-                    //            Debug.WriteLine("=> {0} {1} {2}", i, mif.fType.ToString(), caption);
-                    //        } finally
-                    //        {
-                    //            Marshal.FreeHGlobal(szString);
-                    //        }
-                    //    }
-
-                    //}
                 }
                 catch (Exception ex)
                 {
@@ -132,7 +96,11 @@ namespace Cupertino.Platform.Win32
             });
         }
 
-        private unsafe List<IWindowRef.MenuItemRef> GetMenuItems(IntPtr hMenu)
+        private unsafe List<IWindowRef.MenuItemRef> GetMenuItems(IntPtr hMenu) {
+            return GetMenuItems(hMenu, IntPtr.Zero);
+        }
+
+        private unsafe List<IWindowRef.MenuItemRef> GetMenuItems(IntPtr hMenu, IntPtr rootHandle)
         {
             // ref: https://stackoverflow.com/questions/18589385/retrieve-list-of-menu-items-in-windows-in-c
             // ref: https://stackoverflow.com/questions/22852461/win32-api-getmenuiteminfo-returns-only-the-first-character-of-the-item-text
@@ -163,7 +131,14 @@ namespace Cupertino.Platform.Win32
                         break;
                     case MenuItemType.MFT_STRING:
                         if (mif.cch <= 0) break;
-                        IWindowRef.MenuItemRef item = new IWindowRef.MenuItemRef { Ref = mif.wID, Index = i, IsSeparator = false };
+                        IWindowRef.MenuItemRef item = new IWindowRef.MenuItemRef 
+                        { 
+                            RootMenuHandle = rootHandle == IntPtr.Zero ? hMenu : rootHandle,
+                            MenuHandle = hMenu,
+                            Ref = mif.wID, 
+                            Index = i, 
+                            IsSeparator = false 
+                        };
                         mif.cch++;
                         IntPtr szString = Marshal.AllocHGlobal((IntPtr)(sizeof(char) * mif.cch));
                         //IntPtr szString = Marshal.StringToHGlobalUni(new string('\0', mif.cch));
@@ -174,10 +149,6 @@ namespace Cupertino.Platform.Win32
                             {
                                 throw new Win32Exception();
                             }
-
-                            //var xx = (char[]) szString;
-                            //Debug.WriteLine("{0} {1} {2} {3}", Marshal.PtrToStringUni(szString),
-                            //    xx);
                             item.Label = Marshal.PtrToStringUni(szString);
                         }
                         finally
@@ -187,7 +158,11 @@ namespace Cupertino.Platform.Win32
 
                         if (mif.hSubMenu != null)
                         {
-                            item.SubMenu = new IWindowRef.MenuRef { Ref = mif.hSubMenu, Items = GetMenuItems(mif.hSubMenu) };
+                            item.SubMenu = new IWindowRef.MenuRef 
+                            { 
+                                Ref = mif.hSubMenu, 
+                                Items = GetMenuItems(mif.hSubMenu, rootHandle) 
+                            };
                         }
                         list.Add(item);
                         break;

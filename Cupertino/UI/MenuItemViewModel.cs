@@ -11,23 +11,20 @@ namespace Cupertino.UI
 {
     public class MenuItemViewModel
     {
+        public delegate void CommandHandler(IWindowRef.MenuItemRef mRef);
         private readonly ICommand _command;
 
-        public MenuItemViewModel()
+        public MenuItemViewModel(IWindowRef.MenuItemRef mRef, CommandHandler cmdHandler)
         {
-            _command = new CommandViewModel(Execute);
-        }
-
-        public MenuItemViewModel(IWindowRef.MenuItemRef item) : this()
-        {
-            // Replace '&' MFC menu mnemonic char with wpf's '_'
-            if (item.IsSeparator)
+            IsSeparator = mRef.IsSeparator;
+            if (IsSeparator)
             {
-                IsSeparator = true;
                 return;
             }
-            Header = item.Label.Replace('&', '_');
-            MenuItems = FromMenuRef(item.SubMenu, false);
+
+            _command = new CommandViewModel(cmdHandler, mRef);
+            Header = mRef.Label.Replace('&', '_');  // Replace '&' MFC menu mnemonic char with wpf's '_'
+            MenuItems = FromMenuRef(mRef.SubMenu, cmdHandler, false);
         }
 
         public bool IsRoot { get; set; }
@@ -51,25 +48,27 @@ namespace Cupertino.UI
             MessageBox.Show("Clicked at " + Header);
         }
 
-        public static ObservableCollection<MenuItemViewModel> FromMenuRef(IWindowRef.MenuRef mRef, Boolean topMost = true)
+        public static ObservableCollection<MenuItemViewModel> FromMenuRef(IWindowRef.MenuRef mRef, CommandHandler handle, bool topMost = true)
         {
             if (mRef?.Items is null) return null;
-            return new ObservableCollection<MenuItemViewModel>(mRef.Items.Select(r => new MenuItemViewModel(r) { IsRoot = topMost}));
+            return new ObservableCollection<MenuItemViewModel>(mRef.Items.Select(r => new MenuItemViewModel(r, handle) { IsRoot = topMost}));
         }
     }
 
     public class CommandViewModel : ICommand
     {
-        private readonly Action _action;
+        private readonly MenuItemViewModel.CommandHandler _action;
+        private readonly IWindowRef.MenuItemRef _item;
 
-        public CommandViewModel(Action action)
+        public CommandViewModel(MenuItemViewModel.CommandHandler action, IWindowRef.MenuItemRef item)
         {
             _action = action;
+            _item = item;
         }
 
         public void Execute(object o)
         {
-            _action();
+            _action(_item);
         }
 
         public bool CanExecute(object o)

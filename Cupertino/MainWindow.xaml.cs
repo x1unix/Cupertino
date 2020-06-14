@@ -65,11 +65,17 @@ namespace Cupertino
                 window.ApplicationName, window.Title, window.ProcessID, window.ExecutablePath);
                 ViewState newState = new ViewState 
                 {
+                    LastWindowHandle = window.Handle,
                     ApplicationName = window.ApplicationName,
-                    MenuItems = MenuItemViewModel.FromMenuRef(window.Menu)
+                    MenuItems = MenuItemViewModel.FromMenuRef(window.Menu, OnAppMenuSelect)
                 };
                 State = newState;
-            });   
+            });
+        }
+
+        private void OnAppMenuSelect(IWindowRef.MenuItemRef mRef)
+        {
+            Debug.WriteLine("Selected Item {0} (Root: {1:x8}, Local: {2:x8})", mRef.Label, mRef.RootMenuHandle, mRef.MenuHandle);
         }
 
         ~MainWindow()

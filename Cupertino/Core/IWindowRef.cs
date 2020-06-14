@@ -8,6 +8,7 @@ namespace Cupertino.Core
 {
     public interface IWindowRef
     {
+        public IntPtr Handle { get; }
         public int ProcessID { get; }
         public string ExecutablePath { get; }
         public string Title { get; }
@@ -17,6 +18,8 @@ namespace Cupertino.Core
 
         public class MenuItemRef
         {
+            public IntPtr RootMenuHandle { get; set; }
+            public IntPtr MenuHandle { get; set; }
             public int Ref { get; set; }
             public uint Index { get; set; }
             public bool IsSeparator { get; set; }

@@ -50,7 +50,7 @@
                         <Label Content="{Binding ElementName=cupertinoPanel, Path=State.ApplicationName, FallbackValue=Desktop}" Padding="10,0,10,0" Foreground="White"></Label>
                     </Button.Content>
                 </Button>
-                <Menu Height="Auto" VerticalAlignment="Center" ItemsSource="{Binding ElementName=cupertinoPanel, Path=State.MenuItems}">
+                <Menu x:Name="GlobalMenu" Height="Auto" VerticalAlignment="Center" ItemsSource="{Binding ElementName=cupertinoPanel, Path=State.MenuItems}">
                     <Menu.ItemContainerStyle>
                         <Style TargetType="{x:Type MenuItem}">
                             <Setter Property="Header" Value="{Binding Header}"/>
