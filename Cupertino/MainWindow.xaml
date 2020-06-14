@@ -61,6 +61,15 @@
                                 <DataTrigger Binding="{Binding IsRoot}" Value="False">
                                     <Setter Property="Template" Value="{StaticResource MenuSub}" />
                                 </DataTrigger>
+                                <DataTrigger Binding="{Binding IsSeparator}" Value="True">
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="{x:Type MenuItem}">
+                                                <Separator Template="{StaticResource VsMenuSep}"/>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </DataTrigger>
                             </Style.Triggers>
                         </Style>
                     </Menu.ItemContainerStyle>

@@ -21,11 +21,18 @@ namespace Cupertino.UI
         public MenuItemViewModel(IWindowRef.MenuItemRef item) : this()
         {
             // Replace '&' MFC menu mnemonic char with wpf's '_'
+            if (item.IsSeparator)
+            {
+                IsSeparator = true;
+                return;
+            }
             Header = item.Label.Replace('&', '_');
             MenuItems = FromMenuRef(item.SubMenu, false);
         }
 
         public bool IsRoot { get; set; }
+
+        public bool IsSeparator { get; set; }
         public string Header { get; set; }
 
         public ObservableCollection<MenuItemViewModel> MenuItems { get; set; }
@@ -47,7 +54,7 @@ namespace Cupertino.UI
         public static ObservableCollection<MenuItemViewModel> FromMenuRef(IWindowRef.MenuRef mRef, Boolean topMost = true)
         {
             if (mRef?.Items is null) return null;
-            return new ObservableCollection<MenuItemViewModel>(mRef.Items.Where(i => !i.IsSeparator).Select(r => new MenuItemViewModel(r) { IsRoot = topMost}));
+            return new ObservableCollection<MenuItemViewModel>(mRef.Items.Select(r => new MenuItemViewModel(r) { IsRoot = topMost}));
         }
     }
 
