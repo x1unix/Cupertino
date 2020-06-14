@@ -75,7 +75,9 @@ namespace Cupertino
 
         private void OnAppMenuSelect(IWindowRef.MenuItemRef mRef)
         {
-            Debug.WriteLine("Selected Item {0} (Root: {1:x8}, Local: {2:x8})", mRef.Label, mRef.RootMenuHandle, mRef.MenuHandle);
+            Debug.WriteLine("Selected Item {0}@{1} {2} (Root: {3:x8}, Local: {4:x8})", mRef.Index, mRef.Ref, mRef.Label, mRef.RootMenuHandle, mRef.MenuHandle);
+            IntPtr hWnd = State.LastWindowHandle;
+            Task.Run(() => tracker.SendMenuItemAction(hWnd, mRef));
         }
 
         ~MainWindow()

@@ -27,12 +27,6 @@ namespace Cupertino.Platform.Win32
             callback = new User32.WinEventDelegate(HandleWinEvent);
         }
 
-        //private struct WinPIDPair
-        //{
-        //    IntPtr hwnd;
-        //    uint pid;
-        //}
-
         public class Win32WindowRef : IWindowRef
         {
             public IntPtr Handle { get; set; }
@@ -41,6 +35,19 @@ namespace Cupertino.Platform.Win32
             public string Title { get; set;  }
             public string ApplicationName { get; set; }
             public IWindowRef.MenuRef Menu { get; set; }
+        }
+
+        public void SendMenuItemAction(IntPtr hWnd, IWindowRef.MenuItemRef menuItem) {
+            IntPtr wParam = (IntPtr)menuItem.Ref;
+            IntPtr lParam = menuItem.RootMenuHandle;
+            Debug.WriteLine("SendMessage: {0:x8}, {1}, {2:x}, {3:x}",
+                hWnd, WindowMessage.WM_MENUSELECT, wParam, lParam);
+
+            SendMessage(hWnd, WindowMessage.WM_MENUSELECT, wParam, lParam);
+            //IntPtr szString = Marshal.StringToHGlobalUni(new string("blablabla"));
+            //SendMessage(hWnd, WindowMessage.WM_SETTEXT, (IntPtr) 0, szString);
+            //Marshal.FreeHGlobal(szString);
+
         }
 
         private void HandleWinEvent(IntPtr hWinEventHook, uint eventType,
@@ -131,6 +138,10 @@ namespace Cupertino.Platform.Win32
                         break;
                     case MenuItemType.MFT_STRING:
                         if (mif.cch <= 0) break;
+                        //if (rootHandle == IntPtr.Zero)
+                        //{
+                        //    Debug.WriteLine("{0} is zero, default is {1}", rootHandle, hMenu);
+                        //}
                         IWindowRef.MenuItemRef item = new IWindowRef.MenuItemRef 
                         { 
                             RootMenuHandle = rootHandle == IntPtr.Zero ? hMenu : rootHandle,
@@ -161,7 +172,7 @@ namespace Cupertino.Platform.Win32
                             item.SubMenu = new IWindowRef.MenuRef 
                             { 
                                 Ref = mif.hSubMenu, 
-                                Items = GetMenuItems(mif.hSubMenu, rootHandle) 
+                                Items = GetMenuItems(mif.hSubMenu, item.RootMenuHandle) 
                             };
                         }
                         list.Add(item);
@@ -180,8 +191,6 @@ namespace Cupertino.Platform.Win32
             hook = SetWinEventHook(WindowsEventHookType.EVENT_SYSTEM_FOREGROUND,
                 WindowsEventHookType.EVENT_SYSTEM_FOREGROUND,
                 IntPtr.Zero, cbPtr, 0, 0, WindowsEventHookFlags.WINEVENT_OUTOFCONTEXT | WindowsEventHookFlags.WINEVENT_SKIPOWNPROCESS);
-            //hook = User32.SetWinEventHook(User32.EVENT_SYSTEM_FOREGROUND, User32.EVENT_SYSTEM_FOREGROUND,
-            //    IntPtr.Zero, callback, 0, 0, User32.WINEVENT_OUTOFCONTEXT | User32.WINEVENT_SKIPOWNPROCESS);
             Debug.WriteLine("WinEventHook installed");
         }
 

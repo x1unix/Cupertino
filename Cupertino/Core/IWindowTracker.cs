@@ -11,5 +11,7 @@ namespace Cupertino.Core
         public event WindowSelectedHandler WindowSelected;
 
         public void Attatch() { }
+
+        public void SendMenuItemAction(IntPtr hwnd, IWindowRef.MenuItemRef menuItem) { }
     }
 }
