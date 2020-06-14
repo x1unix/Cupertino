@@ -1,0 +1,93 @@
+﻿<Window x:Class="Cupertino.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Cupertino"
+        xmlns:cupertino="clr-namespace:Cupertino.UI"
+        xmlns:decorations="clr-namespace:Cupertino.Platform.Win32.Decorations"
+        mc:Ignorable="d"
+        Name="cupertinoPanel"
+        Title="MainWindow"
+        Height="24"
+        Width="800"
+        Top="0"
+        Left="0"
+        decorations:WindowBlur.IsEnabled="True"
+        decorations:DesktopAppBar.AppBar="None"
+        AllowsTransparency="True"
+        ShowInTaskbar="False"
+        WindowState="Normal"
+        WindowStyle="None">
+    <Window.Background>
+        <SolidColorBrush Opacity="0.5" Color="Black"/>
+    </Window.Background>
+    <Grid>
+        <DockPanel HorizontalAlignment="Stretch" 
+                   VerticalAlignment="Stretch"
+                   Margin="0">
+            <DockPanel.Resources>
+                <ResourceDictionary>
+                    <ResourceDictionary.MergedDictionaries>
+                        <ResourceDictionary Source="styles.xaml"/>
+                    </ResourceDictionary.MergedDictionaries>
+                </ResourceDictionary>
+            </DockPanel.Resources>
+            <StackPanel DockPanel.Dock="Left" Width="Auto" HorizontalAlignment="Stretch">
+                <Button
+                    HorizontalAlignment="Left"
+                    Padding="0" Margin="5,0,0,0">
+                    <Button.Content>
+                        <ContentControl Content="{StaticResource WindowsLogo}"/>
+                    </Button.Content>
+                </Button>
+                <Button
+                    HorizontalAlignment="Left"
+                    Padding="0"
+                    Margin="0"
+                    FontWeight="Bold">
+                    <Button.Content>
+                        <Label Content="{Binding ElementName=cupertinoPanel, Path=State.ApplicationName, FallbackValue=Desktop}" Padding="10,0,10,0" Foreground="White"></Label>
+                    </Button.Content>
+                </Button>
+                <Menu Height="Auto" VerticalAlignment="Center" ItemsSource="{Binding ElementName=cupertinoPanel, Path=State.MenuItems}">
+                    <Menu.ItemContainerStyle>
+                        <Style TargetType="{x:Type MenuItem}">
+                            <Setter Property="Header" Value="{Binding Header}"/>
+                            <Setter Property="Command" Value="{Binding Command}" />
+                            <Setter Property="Template" Value="{StaticResource MenuTop}" />
+                            <!--<Setter Property="ItemsSource" Value="{Binding Path=MenuItems}"/>-->
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsRoot}" Value="False">
+                                    <Setter Property="Template" Value="{StaticResource MenuSub}" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Menu.ItemContainerStyle>
+                    <Menu.ItemTemplate>
+                        <HierarchicalDataTemplate DataType="{x:Type cupertino:MenuItemViewModel}" ItemsSource="{Binding Path=MenuItems}">
+                            <TextBlock Text="{Binding Header}"/>
+                        </HierarchicalDataTemplate>
+                    </Menu.ItemTemplate>
+                </Menu>
+                <!--<Menu Height="Auto" VerticalAlignment="Center">
+                    <MenuItem Header="File" Template="{StaticResource MenuTop}">
+                        <MenuItem Header="New Project" Template="{StaticResource MenuSub}"></MenuItem>
+                        <MenuItem Header="Open Project" Template="{StaticResource MenuSub}">
+                            <MenuItem Header="WinForms" Template="{StaticResource MenuSub}"></MenuItem>
+                            <MenuItem Header="WPF"  Template="{StaticResource MenuSub}"></MenuItem>
+                        </MenuItem>
+                        <Separator Template="{StaticResource VsMenuSep}"/>
+                        <MenuItem Header="Exit" Template="{StaticResource MenuSub}"></MenuItem>
+                    </MenuItem>
+                    <MenuItem Header="Edit" Template="{StaticResource MenuTop}"></MenuItem>
+                    <MenuItem Header="View" Template="{StaticResource MenuTop}"></MenuItem>
+                </Menu>-->
+            </StackPanel>
+            <StackPanel DockPanel.Dock="Right" HorizontalAlignment="Right">
+                <Button x:Name="BtnExit" Content="X" HorizontalAlignment="Right" Click="BtnExit_Click"/>
+            </StackPanel>
+            
+        </DockPanel>
+    </Grid>
+</Window>

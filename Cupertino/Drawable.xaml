@@ -1,0 +1,44 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:Cupertino">
+    <Viewbox x:Key="WindowsLogo" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" Stretch="Uniform" Height="16" Width="32">
+        <Canvas Name="svg2" Width="64" Height="64">
+            <Canvas.RenderTransform>
+                <TranslateTransform X="0" Y="0"/>
+            </Canvas.RenderTransform>
+            <Canvas.Resources/>
+            <!--Unknown tag: sodipodi:namedview-->
+            <!--Unknown tag: metadata-->
+            <Canvas Name="g10">
+                <Canvas.RenderTransform>
+                    <MatrixTransform Matrix="0.13824895 0 0 -0.13824895 4.3371015 60.057158"/>
+                </Canvas.RenderTransform>
+                <Canvas Name="g12">
+                    <Canvas.RenderTransform>
+                        <ScaleTransform ScaleX="0.1" ScaleY="0.1"/>
+                    </Canvas.RenderTransform>
+                    <Path xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Name="path14" Fill="#FFF">
+                        <Path.Data>
+                            <PathGeometry Figures="m 1803.9 3638.02 c 710.29 108.68 1421.92 211.06 2133.56 309.82 0.45 -623.7 0 -1246.95 0.45 -1870.64 -711.18 -2.71 -1422.37 -13.53 -2134.01 -15.79 -0.45 525.84 -0.45 1051.22 0 1576.61 v 0" FillRule="NonZero"/>
+                        </Path.Data>
+                    </Path>
+                    <Path xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Name="path16" Fill="#FFF">
+                        <Path.Data>
+                            <PathGeometry Figures="m 0 3386.38 c 534.855 82.53 1071.97 153.78 1609.08 220.98 0.45 -517.27 0.45 -1034.09 0.9 -1551.36 -536.66 0.45 -1073.32 -7.67 -1609.98 -6.31 v 1336.69 0" FillRule="NonZero"/>
+                        </Path.Data>
+                    </Path>
+                    <Path xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Name="path18" Fill="#FFF">
+                        <Path.Data>
+                            <PathGeometry Figures="m 0 1886.88 c 536.211 1.81 1072.42 -6.76 1608.63 -5.86 0 -518.62 1.35 -1037.239 0.45 -1555.86 C 1073.32 404.531 536.66 473.98 0 546.59 v 1340.29" FillRule="NonZero"/>
+                        </Path.Data>
+                    </Path>
+                    <Path xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Name="path20" Fill="#FFF">
+                        <Path.Data>
+                            <PathGeometry Figures="m 1800.74 1866.14 c 712.54 0 1424.63 0 2136.72 0 0.9 -621.9 0 -1243.788 0 -1866.14 -710.28 106.43 -1421.92 205.199 -2133.56 301.711 -0.9 521.32 -2.25 1042.649 -3.16 1564.429" FillRule="NonZero"/>
+                        </Path.Data>
+                    </Path>
+                </Canvas>
+            </Canvas>
+        </Canvas>
+    </Viewbox>
+</ResourceDictionary>
